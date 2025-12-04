@@ -1,6 +1,6 @@
 package com.pleasure
 
-import zio.{Ref, UIO}
+import zio.{Ref, UIO, ULayer, ZLayer}
 
 final case class InMemoryProductRepository(ref: Ref[Map[ProductId, Product]]) extends ProductRepository:
   override def findById(id: ProductId): UIO[Option[Product]] =
@@ -17,3 +17,7 @@ final case class InMemoryProductRepository(ref: Ref[Map[ProductId, Product]]) ex
       if map.contains(id) then (true, map - id)
       else (false, map)
 
+object InMemoryProductRepository:
+  val layer: ULayer[ProductRepository] =
+    ZLayer:
+      Ref.make(Map.empty[ProductId, Product]).map(InMemoryProductRepository(_))
