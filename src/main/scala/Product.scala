@@ -1,5 +1,7 @@
 package com.pleasure
 
+import zio.json.{DeriveJsonDecoder, DeriveJsonEncoder, JsonDecoder, JsonEncoder}
+
 enum Category:
   case Dildos, Lingerie, UsedDildos, UsedLingerie, BDSM, Furniture, Accessories, UsedAccessories, Lubricants
 
@@ -36,15 +38,31 @@ final case class Product(
                           offerType: OfferType
                         ):
   def canBeSold: Boolean = offerType.canBeSold
+
   def canBeRented: Boolean = offerType.canBeRented
+
   def salePrice: Option[BigDecimal] = offerType.salePrice
+
   def rentalInfo: Option[(BigDecimal, BigDecimal)] = offerType.rentalInfo
 
 object Product:
-  def create(
-              name: String,
-              category: Category,
-              offerType: OfferType
+  def create(name: String,
+             category: Category,
+             offerType: OfferType
             ): Either[String, Product] =
     if name.isBlank then Left("Name cannot be empty")
     else Right(new Product(ProductId.generate, name, category, offerType))
+
+  given JsonEncoder[Product] = DeriveJsonEncoder.gen[Product]
+  given JsonDecoder[Product] = DeriveJsonDecoder.gen[Product]
+
+object Category:
+  given JsonEncoder[Category] = JsonEncoder[String].contramap(_.toString)
+  given JsonDecoder[Category] = JsonDecoder[String].mapOrFail: s =>
+    Category.values.find(_.toString == s).toRight(s"Unknowns category: &s")
+
+object OfferType:
+  given JsonEncoder[OfferType] = DeriveJsonEncoder.gen[OfferType]
+  given JsonDecoder[OfferType] = DeriveJsonDecoder.gen[OfferType]
+
+
