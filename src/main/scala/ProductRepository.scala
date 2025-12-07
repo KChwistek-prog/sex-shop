@@ -10,3 +10,5 @@ trait ProductRepository:
   def save(product: Product): UIO[Product]
 
   def delete(id: ProductId): UIO[Boolean]
+
+
