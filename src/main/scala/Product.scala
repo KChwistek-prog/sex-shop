@@ -64,5 +64,3 @@ object Category:
 object OfferType:
   given JsonEncoder[OfferType] = DeriveJsonEncoder.gen[OfferType]
   given JsonDecoder[OfferType] = DeriveJsonDecoder.gen[OfferType]
-
-
