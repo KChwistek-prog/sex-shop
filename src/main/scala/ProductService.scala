@@ -11,6 +11,8 @@ trait ProductService:
 
   def delete(id: ProductId): UIO[Boolean]
 
+  def update(id: ProductId, name: String, category: Category, offerType: OfferType): IO[String, Product]
+
 final case class ProductServiceLive(repo: ProductRepository) extends ProductService:
   override def getById(id: ProductId): IO[String, Product] =
     repo.findById(id).flatMap:
@@ -26,6 +28,13 @@ final case class ProductServiceLive(repo: ProductRepository) extends ProductServ
 
   override def delete(id: ProductId): UIO[Boolean] =
     repo.delete(id)
+
+  override def update(id: ProductId, name: String, category: Category, offerType: OfferType): IO[String, Product] =
+    for
+      _ <- getById(id)
+      updated = Product(id, name, category, offerType)
+      saved <- repo.save(updated)
+    yield saved
 
 object ProductServiceLive:
   val layer: URLayer[ProductRepository, ProductService] =
