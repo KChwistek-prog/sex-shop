@@ -35,5 +35,26 @@ object ProductSpec extends ZIOSpecDefault:
         category = Lubricants,
         offerType = ForRental(20, BigDecimal(299))
       ): @unchecked
-      assertTrue(!product.canBeSold, product.canBeRented)
+      assertTrue(!product.canBeSold, product.canBeRented),
+      test("create should reject zero price"):
+        val result = Product.create(
+          name = "Cheap toy",
+          category = Dildos,
+          offerType = ForSale(BigDecimal(0))
+        )
+        assertTrue(result == Left("Sale price must be greater than zero")),
+      test("create should reject negative daily rate" ):
+        val result = Product.create(
+          name = "Expensive toy",
+          category = Dildos,
+          offerType = ForRental(BigDecimal(-5), BigDecimal(50))
+        )
+        assertTrue(result == Left("Daily rate must be greater than zero")),
+      test("should reject negative deposit"):
+        val result = Product.create(
+          name = "Premium toy",
+          category = Dildos,
+          offerType = ForRental(BigDecimal(5), BigDecimal(-10))
+        )
+        assertTrue(result == Left("Deposint must be non-negative"))
   )

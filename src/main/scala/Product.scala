@@ -50,8 +50,28 @@ object Product:
              category: Category,
              offerType: OfferType
             ): Either[String, Product] =
-    if name.isBlank then Left("Name cannot be empty")
-    else Right(new Product(ProductId.generate, name, category, offerType))
+              for 
+                _ <- Either.cond(name.trim.nonEmpty, (), "Name cannot be empty")
+                _ <- validateOfferType(offerType)
+              yield new Product(ProductId.generate, name.trim, category, offerType)
+
+  def validateOfferType(offerType: OfferType): Either[String, Unit] =
+    offerType match
+      case OfferType.ForSale(price) =>
+         Either.cond(price > 0, (), "Sale price must be greater than zero")
+      case OfferType.ForRental(dailyRate, deposit) =>
+        for
+          _ <- Either.cond(dailyRate > 0, (), "Daily rate must be greater than zero")
+          _ <- Either.cond(deposit > 0, (), "Deposint must be non-negative")
+          _ <- Either.cond(deposit >= dailyRate, (), "Deposit must be at least equal to daily rate")
+        yield ()
+      case OfferType.ForBoth(dailyRate, price, deposit) =>
+        for
+          _ <- Either.cond(price > 0, (), "Price must be greater than zero")
+          _ <- Either.cond(dailyRate > 0, (), "Daily rate must be greater than zero")
+          _ <- Either.cond(deposit > 0, (), "Deposint must be non-negative")
+          _ <- Either.cond(deposit >= dailyRate, (), "Deposit must be at least equal to daily rate")
+        yield ()
 
   given JsonEncoder[Product] = DeriveJsonEncoder.gen[Product]
   given JsonDecoder[Product] = DeriveJsonDecoder.gen[Product]
