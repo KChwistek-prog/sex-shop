@@ -67,7 +67,7 @@ object Product:
         yield ()
       case OfferType.ForBoth(dailyRate, price, deposit) =>
         for
-          _ <- Either.cond(price > 0, (), "Sale price must be greater than zero")
+          _ <- Either.cond(price > 0, (), "Price must be greater than zero")
           _ <- Either.cond(dailyRate > 0, (), "Daily rate must be greater than zero")
           _ <- Either.cond(deposit > 0, (), "Deposint must be non-negative")
           _ <- Either.cond(deposit >= dailyRate, (), "Deposit must be at least equal to daily rate")

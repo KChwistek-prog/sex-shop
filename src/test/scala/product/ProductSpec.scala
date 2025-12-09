@@ -42,7 +42,7 @@ object ProductSpec extends ZIOSpecDefault:
           category = Dildos,
           offerType = ForSale(BigDecimal(0))
         )
-        assertTrue(result == Left("Price must be greater than zero")),
+        assertTrue(result == Left("Sale price must be greater than zero")),
       test("create should reject negative daily rate" ):
         val result = Product.create(
           name = "Expensive toy",
