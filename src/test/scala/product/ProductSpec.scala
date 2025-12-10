@@ -14,47 +14,61 @@ object ProductSpec extends ZIOSpecDefault:
         category = Dildos,
         offerType = ForSale(BigDecimal(299))
       )
-      assertTrue(result.isRight),
+      assertTrue(result.isRight)
+    ,
     test("create should reject empty name"):
       val result = Product.create(
         name = "  ",
         category = BDSM,
         offerType = ForRental(BigDecimal(2), BigDecimal(20))
       )
-      assertTrue(result == Left("Name cannot be empty")),
+      assertTrue(result == Left("Name cannot be empty"))
+    ,
     test("ForSale product can be sold but not rented"):
       val Right(product) = Product.create(
         name = "Bondage Bench",
         category = Furniture,
         offerType = ForSale(BigDecimal(20))
       ): @unchecked
-      assertTrue(product.canBeSold, !product.canBeRented),
+      assertTrue(product.canBeSold, !product.canBeRented)
+    ,
     test("ForRental product can be rented but not sold"):
       val Right(product) = Product.create(
         name = "Lubricant",
         category = Lubricants,
         offerType = ForRental(20, BigDecimal(299))
       ): @unchecked
-      assertTrue(!product.canBeSold, product.canBeRented),
-      test("create should reject zero price"):
-        val result = Product.create(
-          name = "Cheap toy",
-          category = Dildos,
-          offerType = ForSale(BigDecimal(0))
-        )
-        assertTrue(result == Left("Sale price must be greater than zero")),
-      test("create should reject negative daily rate" ):
-        val result = Product.create(
-          name = "Expensive toy",
-          category = Dildos,
-          offerType = ForRental(BigDecimal(-5), BigDecimal(50))
-        )
-        assertTrue(result == Left("Daily rate must be greater than zero")),
-      test("should reject negative deposit"):
-        val result = Product.create(
-          name = "Premium toy",
-          category = Dildos,
-          offerType = ForRental(BigDecimal(5), BigDecimal(-10))
-        )
-        assertTrue(result == Left("Deposint must be non-negative"))
+      assertTrue(!product.canBeSold, product.canBeRented)
+    ,
+    test("create should reject zero price"):
+      val result = Product.create(
+        name = "Cheap toy",
+        category = Dildos,
+        offerType = ForSale(BigDecimal(0))
+      )
+      assertTrue(result == Left("Sale price must be greater than zero"))
+    ,
+    test("create should reject negative deposit"):
+      val result = Product.create(
+        name = "Expensive toy",
+        category = Dildos,
+        offerType = ForRental(BigDecimal(100), BigDecimal(-10))
+      )
+      assertTrue(
+        result.isLeft,
+        result.left.exists(_.contains("Deposit must be greater than zero"))
+      )
+    ,
+    test("create should collect multiple validation errors"):
+      val result = Product.create(
+        name = " ",
+        category = Dildos,
+        offerType = ForRental(BigDecimal(-10), BigDecimal(-10))
+      )
+      assertTrue(
+        result.isLeft,
+        result.left.exists(_.contains("Name cannot be empty")),
+        result.left.exists(_.contains("Daily rate must be greater than zero")),
+        result.left.exists(_.contains("Deposit must be greater than zero"))
+      )
   )
