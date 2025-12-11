@@ -5,6 +5,7 @@ import Category.{BDSM, Dildos, Furniture, Lubricants}
 import OfferType.{ForRental, ForSale}
 
 import zio.test.{ZIOSpecDefault, assertTrue}
+import {Category, OfferType, Product}
 
 object ProductSpec extends ZIOSpecDefault:
   def spec = suite("Product")(

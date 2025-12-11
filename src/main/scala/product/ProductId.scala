@@ -1,4 +1,4 @@
-package com.pleasure
+package com.pleasure.product
 
 import zio.json.{JsonDecoder, JsonEncoder}
 import zio.prelude.Newtype

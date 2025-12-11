@@ -6,6 +6,7 @@ import OfferType.ForSale
 
 import zio.test.{ZIOSpecDefault, assertTrue}
 import zio.{ULayer, ZIO}
+import {Category, OfferType}
 
 object ProductServiceSpec extends ZIOSpecDefault:
   val testLayer: ULayer[ProductService] =

@@ -1,7 +1,8 @@
-package com.pleasure
+package com.pleasure.product
 
 import zio.json.{DeriveJsonDecoder, DeriveJsonEncoder, JsonDecoder, JsonEncoder}
 import zio.prelude.Validation
+import com.pleasure.product.ProductId
 
 enum Category:
   case Dildos, Lingerie, UsedDildos, UsedLingerie, BDSM, Furniture, Accessories,
