@@ -1,11 +1,12 @@
-package com.pleasure
-
-import shared.AppError
+package com.pleasure.product
 
 import zio.*
 import zio.http.*
 import zio.http.Status.{BadRequest, NoContent, NotFound}
 import zio.json.*
+import com.pleasure.product.{Category, OfferType}
+import com.pleasure.product.ProductService
+import com.pleasure.shared.AppError
 
 final case class CreateProductRequest(
                                        name: String,

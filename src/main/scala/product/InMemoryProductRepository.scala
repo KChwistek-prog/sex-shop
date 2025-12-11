@@ -1,6 +1,9 @@
-package com.pleasure
+package com.pleasure.product
 
 import zio.{Ref, UIO, ULayer, ZLayer}
+import com.pleasure.product.ProductId
+import com.pleasure.product.Product
+import com.pleasure.product.ProductRepository
 
 final case class InMemoryProductRepository(ref: Ref[Map[ProductId, Product]]) extends ProductRepository:
   override def findById(id: ProductId): UIO[Option[Product]] =

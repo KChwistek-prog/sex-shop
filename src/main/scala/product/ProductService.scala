@@ -1,9 +1,10 @@
-package com.pleasure
-
-import shared.AppError
-import shared.AppError.NotFound
+package com.pleasure.product
 
 import zio.{IO, UIO, URLayer, ZIO, ZLayer}
+import com.pleasure.product.ProductId
+import com.pleasure.product.{Category, OfferType, Product}
+import com.pleasure.product.ProductRepository
+import com.pleasure.shared.AppError
 
 trait ProductService:
   def getById(id: ProductId): IO[AppError, Product]
@@ -20,7 +21,7 @@ final case class ProductServiceLive(repo: ProductRepository) extends ProductServ
   override def getById(id: ProductId): IO[AppError, Product] =
     repo.findById(id).flatMap:
       case Some(product) => ZIO.succeed(product)
-      case None => ZIO.fail(NotFound("Product", id.asString))
+      case None => ZIO.fail(AppError.NotFound("Product", id.asString))
 
   override def getAll: UIO[List[Product]] =
     repo.findAll()
