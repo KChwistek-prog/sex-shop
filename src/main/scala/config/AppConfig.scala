@@ -6,7 +6,7 @@ import zio.config.magnolia.*
 import zio.config.typesafe.TypesafeConfigProvider
 
 final case class DatabaseConfig(
-    url: String,
+    jdbcUrl: String,
     username: String,
     password: String
 )
