@@ -7,7 +7,7 @@ object FlywayMigration:
     ZIO.attempt {
       Flyway
         .configure()
-        .dataSource(config.url, config.username, config.password)
+        .dataSource(config.jdbcUrl, config.username, config.password)
         .load()
         .migrate()
     }.unit
